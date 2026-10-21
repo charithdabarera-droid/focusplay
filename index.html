@@ -1,0 +1,84 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8fb9a8"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon-192.png">
+<title>FocusPlay</title><link rel="stylesheet" href="styles.css"></head><body>
+<header><h1>FocusPlay</h1><p class="sub" id="greet">Small steps, gentle wins.</p></header>
+<main>
+<section id="tab-play" class="tab active">
+ <button class="big primary" id="surprise">✨ Surprise me</button>
+ <div class="grid" id="gameList"></div>
+ <div id="gameArea" class="card hidden"><div class="row"><h2 id="gTitle"></h2><span id="gTimer" class="pill"></span></div><div id="gBody"></div><button class="soft" id="gExit">Finish</button></div>
+</section>
+<section id="tab-want" class="tab">
+ <div class="card"><h2>What I want to do</h2><p class="streak" id="streak"></p>
+ <form id="wForm" class="row"><input id="wIn" placeholder="Add a task or wish…" maxlength="80" required><button class="primary">Add</button></form>
+ <ul id="wList"></ul><button class="soft small" id="wClear">Clear done</button></div>
+</section>
+<section id="tab-day" class="tab">
+ <div class="card"><h2>My routine</h2><label>Sleep hours <input type="number" id="sleep" min="0" max="16" step="0.5"></label><label>Essentials (meals, commute) h <input type="number" id="ess" min="0" max="12" step="0.5"></label>
+ <div id="days"></div></div>
+ <div class="card"><h2>Free “me time”</h2><div id="bars"></div><p class="legend"><i class="sl"></i>Sleep <i class="wk"></i>Work <i class="me"></i>Me time <i class="es"></i>Essentials</p></div>
+</section>
+<section id="tab-rem" class="tab">
+ <div class="card"><h2>Healthy reminders</h2>
+ <label class="tg"><input type="checkbox" id="brOn"> Break reminders</label>
+ <label>Every <input type="number" id="brMin" min="5" max="180"> minutes of work</label><label>Break priority <select id="brPri" class="pri"><option value="needed">Needed</option><option value="important">Important</option><option value="urgent">Urgent</option></select></label>
+ <label class="tg"><input type="checkbox" id="wdOn"> Evening wind‑down</label>
+ <label>Wind‑down time <input type="time" id="wdTime"></label><label>Wind‑down priority <select id="wdPri" class="pri"><option value="needed">Needed</option><option value="important">Important</option><option value="urgent">Urgent</option></select></label>
+ <label class="tg"><input type="checkbox" id="snd"> Soft chime sound</label>
+ <button class="big" id="perm">Allow notifications</button><p class="sub" id="permStat"></p>
+ <div class="row"><button class="soft lv-needed" data-test="needed">Test Needed</button><button class="soft lv-important" data-test="important">Test Important</button><button class="soft lv-urgent" data-test="urgent">Test Urgent</button></div><p class="sub" id="nextR"></p></div>
+ <div class="card"><h2>My task reminders</h2>
+ <form id="cForm"><input id="cName" placeholder="Task name (e.g. Take meds)" maxlength="60" required style="width:100%">
+ <label>Type <select id="cMode"><option value="time">At a time (daily)</option><option value="every">Repeat every…</option></select></label>
+ <label id="cTimeL">Time <input type="time" id="cTime" value="12:00"></label>
+ <label id="cEveryL" class="hidden">Every (minutes) <input type="number" id="cEvery" min="1" max="720" value="60"></label>
+ <label>Priority <select id="cPri" class="pri"><option value="needed">Needed</option><option value="important">Important</option><option value="urgent">Urgent</option></select></label><button class="primary big">Add reminder</button></form>
+ <ul id="cList"></ul><p class="legend"><i class="lv-needed"></i>Needed <i class="lv-important"></i>Important <i class="lv-urgent"></i>Urgent</p></div>
+</section>
+<section id="tab-gentle" class="tab">
+ <div class="card water"><div class="row"><h2>💧 Water today</h2><span class="pill" id="wCount"></span></div><div class="glasses" id="glasses"></div>
+ <div class="row"><button class="soft" id="wMinus">−</button><button class="primary big" id="wPlus" style="flex:3">+ 1 glass</button></div><label>Daily goal (glasses) <input type="number" id="wGoal" min="1" max="20"></label></div>
+ <div class="card"><h2>Gentle nudges</h2><p class="sub">Soft reminders for your body and mind. Tap a nudge to edit.</p><ul id="gList"></ul><button class="soft" id="gNew">+ Create my own nudge</button></div>
+ <div class="card hidden" id="gEdit"><h2 id="gEdT">Edit nudge</h2>
+  <input id="gName" placeholder="Nudge name" maxlength="50" style="width:100%">
+  <label>Mode <select id="gMode"><option value="interval">Every N minutes</option><option value="times">At specific times</option></select></label>
+  <label id="gEvL">Every (minutes) <input type="number" id="gEvery" min="1" max="720"></label>
+  <div id="gTimesL" class="hidden"><div id="gTimes" class="times"></div><button class="soft small" id="gAddT" type="button">+ Add time</button></div>
+  <label>Repeat <select id="gRep"><option value="always">Always</option><option value="weekdays">Certain weekdays</option><option value="range">Date range</option></select></label>
+  <div id="gDaysL" class="chips hidden"><label class="chip"><input type="checkbox" value="0" class="gDay">Mon</label><label class="chip"><input type="checkbox" value="1" class="gDay">Tue</label><label class="chip"><input type="checkbox" value="2" class="gDay">Wed</label><label class="chip"><input type="checkbox" value="3" class="gDay">Thu</label><label class="chip"><input type="checkbox" value="4" class="gDay">Fri</label><label class="chip"><input type="checkbox" value="5" class="gDay">Sat</label><label class="chip"><input type="checkbox" value="6" class="gDay">Sun</label></div>
+  <div id="gRangeL" class="hidden"><label>From <input type="date" id="gFrom"></label><label>To <input type="date" id="gTo"></label></div>
+  <label class="tg"><input type="checkbox" id="gAh"> Only during active hours</label>
+  <div id="gAhL" class="row hidden"><input type="time" id="gAhS"><span>to</span><input type="time" id="gAhE"></div>
+  <label>Pop-up priority <select id="gPri"><option value="needed">Needed</option><option value="important">Important</option><option value="urgent">Urgent</option></select></label>
+  <div class="row"><button class="soft" id="gDel">Delete</button><button class="soft" id="gCancel">Cancel</button><button class="primary" id="gSave">Save</button></div></div>
+ <div class="card"><h2>📵 Phone‑away nudge</h2><p class="sub">🔒 Only time spent <b>inside FocusPlay</b> is counted, and only on this device. Web apps can’t (and we won’t) read your phone’s overall usage.</p>
+  <div class="stats"><div><b id="uSess">0m</b><small>this session</small></div><div><b id="uDay">0m</b><small>today in app</small></div></div>
+  <label class="tg"><input type="checkbox" id="uOn"> Nudge me after</label><label>Limit (minutes/day) <input type="number" id="uLim" min="1" max="600"></label></div>
+ <div class="card"><h2>🌿 Phone‑free time</h2><p class="sub">Put the phone face down and do something offline. We’ll chime when it’s over.</p>
+  <div class="row presets"><button class="soft" data-pf="10">10 min</button><button class="soft" data-pf="25">25 min</button><button class="soft" data-pf="45">45 min</button></div></div>
+</section>
+<section id="tab-more" class="tab">
+ <div class="card"><h2>Theme</h2><div class="pal" id="pal"></div><label>Custom accent <input type="color" id="accent"></label><button class="soft small" id="accReset">Use palette accent</button></div>
+ <div class="card"><h2>Suggestion box</h2><form id="sForm"><textarea id="sText" rows="4" maxlength="1000" placeholder="Your idea, wish or problem…" required></textarea>
+ <label>Type <select id="sType"><option>Upgrade</option><option>Downgrade</option><option>Improvement</option><option>Bug</option></select></label>
+ <div class="row"><span>Rating (optional)</span><div id="stars" class="stars"></div></div>
+ <div class="row"><button class="soft" type="submit">Save</button><button class="primary" type="button" id="sSend">Save &amp; Send ✉️</button></div></form>
+ <h2 style="margin-top:18px">Past suggestions</h2><ul id="sList"></ul></div>
+ <div class="card" id="refer"><h2>🎁 Refer a friend</h2><p>Get <b>$1 back</b> for every friend who buys with your code — credits stack up as App Store or Google Play credit.</p><div class="stats"><div><b id="rCred">$0</b><small>credits earned</small></div><div><b id="rCnt">0</b><small>friends joined</small></div></div>
+  <div class="code" id="myCode"></div><div class="row"><button class="primary" id="rShare">Share code</button><button class="soft" id="rCopy" style="margin:0">Copy</button></div>
+  <h3>Enter a friend’s code</h3><div id="rFriend"><form id="rForm" class="row"><input id="rIn" placeholder="FOCUS-XXXX" maxlength="10" autocapitalize="characters"><button class="primary">Apply</button></form></div><p class="sub" id="rMsg"></p>
+  <p class="legend">Pending store setup: credits aren’t issued yet in this prototype.</p></div>
+ <div class="card" id="privacy"><h2>🔒 Privacy</h2><ul class="priv">
+  <li>🚫 No ads, ever.</li><li>👤 No account or sign‑up.</li><li>🙈 No personal data collected — no analytics, no tracking.</li>
+  <li>📱 Everything is stored on this device only.</li><li>💳 We never ask for or store bank or card details.</li>
+  <li>✨ One‑time purchase includes all future updates and support.</li></ul>
+  <div class="row"><button class="primary" id="exp">⬇ Export my data</button><button class="soft" id="impB" style="margin:0">⬆ Import</button></div><input type="file" id="imp" accept="application/json,.json" class="hidden"><p class="sub" id="bkMsg"></p></div>
+</section>
+</main>
+<div id="toast" class="hidden lv-needed"><p id="toastMsg"></p></div>
+<div id="card" class="hidden"><div class="cardpop lv-important"><b class="badge">IMPORTANT</b><h2 id="cardT"></h2><p id="cardM"></p><button class="big" id="cardOk">Got it</button></div></div>
+<div id="pfree" class="hidden"><p>Phone‑free time</p><div class="big-t" id="pfT">25:00</div><p>Put the phone down 🌿<br>Look away, stretch, breathe.</p><button class="big ghost" id="pfStop">End early</button></div>
+<div id="confirm" class="hidden"><div class="cardpop lv-important"><h2>Replace your data?</h2><p id="cfMsg"></p><div class="row"><button class="soft" id="cfNo" style="margin:0">Cancel</button><button class="primary" id="cfYes">Replace</button></div></div></div>
+<div id="urgent" class="hidden" role="alertdialog"><b class="badge">⚠ URGENT</b><h1 id="urgT"></h1><p id="urgM"></p><button class="big" id="urgDone">✓ Done</button><button class="big ghost" id="urgSnooze">Snooze 5 min</button></div>
+<nav><button data-t="play" class="on">🎲<span>Play</span></button><button data-t="want">✅<span>Want</span></button><button data-t="day">🌤<span>Day</span></button><button data-t="rem">🔔<span>Remind</span></button><button data-t="gentle">🌱<span>Gentle</span></button><button data-t="more">⚙️<span>More</span></button></nav>
+<script src="app.js"></script></body></html>
