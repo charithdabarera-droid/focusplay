@@ -215,3 +215,33 @@ $('#lang').onchange=function(){setLang($('#lang').value,true)};onLang(renderLang
 applyTheme();setLang(pickLang(),false);initRem();
 if(sessionStorage.getItem('fp_imported')){sessionStorage.removeItem('fp_imported');setTimeout(function(){showToast(t('restored'),3000)},300)}
 if(HAS.sw&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(function(){});
+// ===== native notifications (Capacitor). Web behaviour unchanged when not native.
+(function(){var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var LN=C.Plugins&&C.Plugins.LocalNotifications;if(!LN)return;
+ var PLAT=C.getPlatform&&C.getPlatform(),granted=false,tmr=null,WINDOW_D=3,CAP=60;
+ notify=function(){};// native notifications are pre-scheduled below; in-app cards still show while open
+ function prLabel(p){var o=$('#cPri option[value="'+p+'"]');return o?o.textContent:p}
+ function chans(){if(PLAT!=='android')return Promise.resolve();var imp={needed:2,important:3,urgent:4};return Promise.all(Object.keys(imp).map(function(p){return LN.createChannel({id:'fp-'+p,name:prLabel(p),importance:imp[p],vibration:p==='urgent',lights:p==='urgent',visibility:1}).catch(function(){})}))}
+ function hmAt(d){return pad(d.getHours())+':'+pad(d.getMinutes())}
+ function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+ function at(day,hm){var p=hm.split(':'),d=new Date(day);d.setHours(+p[0],+p[1],0,0);return d}
+ function workAt(d){var w=R.days[(d.getDay()+6)%7];if(!w.on)return false;var n=mins(hmAt(d)),s=mins(w.s),e=mins(w.e);return s<=e?n>=s&&n<e:n>=s||n<e}
+ function gOk(g,d){var td=ymd(d),hm=hmAt(d);if(g.repeat==='weekdays'&&g.days.indexOf((d.getDay()+6)%7)<0)return false;if(g.repeat==='range'&&((g.from&&td<g.from)||(g.to&&td>g.to)))return false;if(g.ah&&(g.ahS<=g.ahE?(hm<g.ahS||hm>=g.ahE):(hm<g.ahS&&hm>=g.ahE)))return false;return true}
+ function build(){var now=Date.now(),end=now+WINDOW_D*864e5,L=[],days=[];for(var i=0;i<=WINDOW_D;i++){var d=new Date();d.setDate(d.getDate()+i);d.setHours(0,0,0,0);days.push(d)}
+  var fx=false,add=function(ts,title,body,pri){if(ts>now+5e3&&ts<=end)L.push({ts:ts,title:title,body:body,pri:pri||'needed',fx:fx})};
+  var every=function(from,minutes,cb){fx=false;var st=Math.max(1,minutes)*6e4,ts=from+st;if(ts<now)ts+=Math.ceil((now-ts)/st)*st;for(var n=0;ts<=end&&n<2000;ts+=st,n++)cb(ts)};
+  if(M.brOn)every(M.lastBr,M.brMin,function(ts){if(workAt(new Date(ts)))add(ts,t('brkT'),t('brkM',{n:NF(M.brMin)}),M.brPri)});
+  if(M.wdOn)days.forEach(function(d){fx=true;add(+at(d,M.wdTime),t('wdT'),t('wdM'),M.wdPri)});
+  CR.forEach(function(r){if(!r.on)return;if(r.mode==='every')every(r.last||now,r.every,function(ts){add(ts,r.name,t('repMsg'),r.pri)});else if(r.mode==='time')days.forEach(function(d){fx=true;add(+at(d,r.time),r.name,t('schedMsg',{t:fmtT(r.time)}),r.pri)})});
+  (G||[]).forEach(function(g){if(!g.on)return;var ti=(g.e||'🌱')+' '+gName(g),bo=t('gentleMsg');if(g.mode==='interval')every(g.last||now,g.every,function(ts){if(gOk(g,new Date(ts)))add(ts,ti,bo,g.pri)});else days.forEach(function(d){fx=true;g.times.forEach(function(tm){var x=at(d,tm);if(gOk(g,x))add(+x,ti,bo,g.pri)})})});
+  // keep fixed-time/urgent ones first (OS limit ~64 pending on iOS), fill remaining slots with soonest interval nudges
+  var rank=function(x){return x.fx||x.pri==='urgent'?0:1};L.sort(function(a,b){return rank(a)-rank(b)||a.ts-b.ts});L=L.slice(0,CAP);L.sort(function(a,b){return a.ts-b.ts});return L}
+ function resched(){if(!granted)return Promise.resolve();return LN.getPending().then(function(p){return p.notifications.length?LN.cancel({notifications:p.notifications.map(function(n){return{id:n.id}})}):null}).then(function(){var L=build();if(!L.length)return;
+  return LN.schedule({notifications:L.map(function(x,i){var u=x.pri==='urgent';return{id:1000+i,title:(u?'⚠ ':'')+x.title,body:x.body,schedule:{at:new Date(x.ts),allowWhileIdle:true},channelId:'fp-'+x.pri,smallIcon:'ic_stat_focusplay',iconColor:'#8fb9a8',autoCancel:true,ongoing:false,extra:{pri:x.pri},threadIdentifier:'fp-'+x.pri,interruptionLevel:u?'timeSensitive':x.pri==='needed'?'passive':'active'}})})}).catch(function(e){console.warn('LN',e)})}
+ function later(){clearTimeout(tmr);tmr=setTimeout(resched,800)}
+ var KEYS={rem:1,custom:1,gentle:1,routine:1,lang:1},sig={};var oset=S.set;S.set=function(k,v){oset.call(S,k,v);if(!KEYS[k])return;var j;try{j=JSON.stringify(v,function(a,b){return a==='wdDay'||a==='fired'||a==='lastDay'?undefined:b})}catch(e){}if(j!==sig[k]){sig[k]=j;later()}};
+ permInfo=function(){LN.checkPermissions().then(function(r){granted=r.display==='granted';$('#perm').disabled=false;$('#permStat').textContent=t('permSt',{p:t('perm_'+(granted?'granted':r.display==='denied'?'denied':'default'))})+(granted?' ✓':t('permFb'))}).catch(function(){})};onLang(permInfo);onLang(later);
+ $('#perm').onclick=function(){LN.requestPermissions().then(function(r){granted=r.display==='granted';permInfo();return chans().then(resched)}).catch(permInfo)};
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')later()});
+ LN.checkPermissions().then(function(r){granted=r.display==='granted';permInfo();if(r.display==='prompt'||r.display==='prompt-with-rationale')return LN.requestPermissions().then(function(q){granted=q.display==='granted';permInfo()})}).then(chans).then(resched).catch(function(){});
+ window.__fpResched=resched;
+})();
