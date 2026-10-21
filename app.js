@@ -157,13 +157,18 @@ $('#pfStop').onclick=()=>pfStop(false);
 // with your code, stacking. Payout = App Store / Google Play gift cards or promo codes issued by the
 // developer. Requires a small backend to verify referrals (record code at purchase, validate receipt,
 // tally credits per code). Nothing is sent anywhere here; credits stay at $0 locally.
-const RC=/^FOCUS-[A-Z0-9]{4}$/;let REF=S.get('ref',null);
-if(!REF){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r=crypto.getRandomValues(new Uint8Array(4));REF={mine:'FOCUS-'+[...r].map(x=>A[x%A.length]).join(''),friend:''};S.set('ref',REF)}
+const RA='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L
+const RC=new RegExp('^FOCUS-['+RA+']{4}-['+RA+']{4}$');
+// Random locally; collisions are unlikely (31^8 ≈ 8.5e11) but true per-person uniqueness needs server-side issuance.
+function genCode(){const out=[];while(out.length<8){const b=crypto.getRandomValues(new Uint8Array(16));for(const x of b){if(x<248&&out.length<8)out.push(RA[x%31])}}return 'FOCUS-'+out.slice(0,4).join('')+'-'+out.slice(4).join('')}
+let REF=S.get('ref',null);
+if(!REF){REF={mine:genCode(),friend:''};S.set('ref',REF)}
+else if(!RC.test(REF.mine)){REF.oldCode=REF.mine;REF.mine=genCode();S.set('ref',REF)} // migrate legacy FOCUS-XXXX
 function renderRef(){$('#myCode').textContent=REF.mine;$('#rCred').textContent='$'+(REF.credits||0);$('#rCnt').textContent=REF.credits||0;if(REF.friend){$('#rFriend').innerHTML=`<p>✓ Friend code applied: <b>${esc(REF.friend)}</b></p>`;}}
 const shareTxt=()=>`I use FocusPlay, a calm ADHD-support app. Use my code ${REF.mine} when you buy!`;
 async function copyCode(){try{await navigator.clipboard.writeText(REF.mine);toast2('Code copied 📋')}catch(e){toast2('Your code: '+REF.mine)}}
 $('#rShare').onclick=async()=>{if(navigator.share){try{await navigator.share({title:'FocusPlay',text:shareTxt()})}catch(e){}}else copyCode()};$('#rCopy').onclick=copyCode;
-document.addEventListener('submit',e=>{if(e.target.id!=='rForm')return;e.preventDefault();const v=$('#rIn').value.trim().toUpperCase();if(!RC.test(v)){$('#rMsg').textContent='Codes look like FOCUS-AB12.';return}if(v===REF.mine){$('#rMsg').textContent='That’s your own code 🙂';return}REF.friend=v;S.set('ref',REF);$('#rMsg').textContent='Thanks! Code saved on this device.';renderRef()});renderRef();
+document.addEventListener('submit',e=>{if(e.target.id!=='rForm')return;e.preventDefault();const v=$('#rIn').value.trim().toUpperCase();if(!RC.test(v)){$('#rMsg').textContent='Codes look like FOCUS-AB2C-DE3F.';return}if(v===REF.mine){$('#rMsg').textContent='That’s your own code 🙂';return}REF.friend=v;S.set('ref',REF);$('#rMsg').textContent='Thanks! Code saved on this device.';renderRef()});renderRef();
 // ===== Export / import
 $('#exp').onclick=()=>{const d={app:'FocusPlay',version:3,exported:new Date().toISOString(),data:{}};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('fp_'))d.data[k]=localStorage.getItem(k)}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='focusplay-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);$('#bkMsg').textContent='Backup saved to your device.'};
 $('#impB').onclick=()=>$('#imp').click();
