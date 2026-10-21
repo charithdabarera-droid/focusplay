@@ -17,6 +17,21 @@ Plain HTML/CSS/JS with no build step. It works offline using a service worker an
   - An in-app usage limit nudge, and a phone-free focus timer.
 - **More:** themes (6 palettes plus a custom accent), a suggestion box (saved locally and sent by mailto to `SUPPORT_EMAIL`), refer-a-friend ($1 stacking credits, pending store setup), privacy information, and JSON export/import of your data.
 
+## Languages
+FocusPlay is available in 20 languages: English, العربية (Arabic, RTL), Español, Français, Deutsch, Português, Italiano, Русский, 简体中文, 日本語, 한국어, हिन्दी, اردو (Urdu, RTL), বাংলা, Bahasa Indonesia, Türkçe, සිංහල, தமிழ், Filipino and Bahasa Melayu.
+- **Where the strings live:** every UI string is in `i18n.js`. Any key missing from a language falls back to English.
+- **Choosing a language:** the app picks one from `navigator.languages` and falls back to English. You can change it with the picker in the More tab; the switch is instant, with no reload, and is saved.
+- **RTL:** Arabic and Urdu set `dir="rtl"`, and the layout uses logical CSS properties so it mirrors correctly.
+- **Formatting:** numbers, times, dates, durations and currency are formatted with `Intl`.
+- **Word scramble:** each language has its own word list. Words are split with `Intl.Segmenter`, with a regex fallback, so Indic and Sinhala syllables stay whole.
+- **Fonts:** the app uses a system font stack that covers every script.
+- **Translations:** the non-English translations are **machine-assisted** and need native-speaker review before release.
+
+## Compatibility
+- **Tested:** headless Chromium, Firefox and WebKit at iPhone SE, Pixel 7, 360×780 Android, iPad and 1440 desktop sizes.
+- **Fallbacks:** Notification, vibrate, Web Share, the clipboard and AudioContext (including the `webkit` prefix) are feature-detected, with graceful fallbacks.
+- **Browser support:** the code avoids newer JS so it targets Safari 14+. Some logical CSS properties need Safari 14.1.
+
 ## Privacy
 There are no ads, no account and no analytics. All data stays in this device's localStorage. Usage tracking counts only time spent inside FocusPlay; web apps cannot read phone-wide usage.
 
