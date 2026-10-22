@@ -110,3 +110,16 @@ button,label,h2,h3,p,li span{overflow-wrap:anywhere}
 .code{font-size:clamp(18px,6.2vw,30px);letter-spacing:2px;white-space:nowrap;overflow-wrap:normal}
 
 .sndl{list-style:none;padding:0;margin:.4rem 0}.sndl li{margin:.3rem 0;align-items:center}.sndl li .small,.sndrow .small{flex:none;margin:0}.sndrow{align-items:flex-end}.sndrow select{width:100%}
+
+.seg{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin:6px 0}.seg span{color:var(--mute);font-size:14px}.seg button{flex:none;margin:0;padding:6px 12px;border-radius:99px;background:var(--soft);font-size:14px}.seg button.on{background:var(--g);color:#fff}
+#gPause{flex:none;margin:0}#gameArea.paused #gBody{filter:blur(4px);opacity:.5;pointer-events:none}
+.schulte,.odd,.slide,.sudoku{display:grid;gap:6px;margin:10px 0}.schulte button,.odd button,.slide button,.sudoku button{aspect-ratio:1;margin:0;padding:0;font-size:20px;background:var(--field)}
+.odd button{font-size:24px}.schulte button.ok{opacity:.35}.no{animation:shake .3s}.odd button.ok{background:var(--g)}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.simon{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:300px;margin:10px auto}.simon button{aspect-ratio:1;margin:0;border-radius:24px;opacity:.55;transition:opacity .1s,transform .1s}.simon button.lit{opacity:1;transform:scale(1.05)}
+.dots{width:100%;max-width:360px;display:block;margin:auto}.dots g{cursor:pointer}.dots g.ok circle{fill:var(--g)}
+.sudoku{gap:2px}.sudoku button{border-radius:6px;font-weight:600;color:var(--g)}.sudoku button.giv{color:var(--ink);background:var(--soft)}.sudoku button.sel{outline:3px solid var(--g)}.sudoku button.br{margin-right:4px}.sudoku button.bb{margin-bottom:4px}
+.pad{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.pad button{flex:1 0 13%;margin:0;padding:10px 0;font-size:18px}
+.slide{max-width:320px;margin:10px auto}.slide button{font-weight:700;background:var(--g);color:#fff;font-size:22px}
+.sudoku button.br{margin-right:0;box-shadow:3px 0 0 var(--g)}.sudoku button.bb{margin-bottom:0;box-shadow:0 3px 0 var(--g)}.sudoku button.br.bb{box-shadow:3px 0 0 var(--g),0 3px 0 var(--g),3px 3px 0 var(--g)}.sudoku{gap:5px}
+.seg button{padding:5px 10px;font-size:13px}.seg span{width:100%;text-align:center}
