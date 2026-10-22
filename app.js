@@ -263,7 +263,10 @@ $('#lang').onchange=function(){setLang($('#lang').value,true)};onLang(renderLang
 // ===== boot
 applyTheme();setLang(pickLang(),false);initRem();
 if(sessionStorage.getItem('fp_imported')){sessionStorage.removeItem('fp_imported');setTimeout(function(){showToast(t('restored'),3000)},300)}
-if(HAS.sw&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(function(){});
+if(HAS.sw&&location.protocol!=='file:'){(function(){var sw=navigator.serviceWorker,hadCtl=!!sw.controller,reloading=false;
+ sw.addEventListener('controllerchange',function(){if(!hadCtl||reloading)return;var last=+sessionStorage.getItem('fp_swReload')||0;if(Date.now()-last<15000)return;reloading=true;sessionStorage.setItem('fp_swReload',Date.now());sessionStorage.setItem('fp_updated','1');location.reload()});
+ sw.register('sw.js',{updateViaCache:'none'}).then(function(reg){var up=function(){try{reg.update().catch(function(){})}catch(e){}};up();document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')up()});if(reg.waiting&&sw.controller)reg.waiting.postMessage('skipWaiting')}).catch(function(){})})()}
+if(sessionStorage.getItem('fp_updated')){sessionStorage.removeItem('fp_updated');setTimeout(function(){showToast(t('updated'),3500)},400)}
 
 // ===== sounds UI
 function saveSel(){S.set('sounds',SEL)}
