@@ -108,3 +108,5 @@ nav{z-index:8}
 @media (max-width:340px){.grid{grid-template-columns:minmax(0,1fr)}}
 button,label,h2,h3,p,li span{overflow-wrap:anywhere}
 .code{font-size:clamp(18px,6.2vw,30px);letter-spacing:2px;white-space:nowrap;overflow-wrap:normal}
+
+.sndl{list-style:none;padding:0;margin:.4rem 0}.sndl li{margin:.3rem 0;align-items:center}.sndl li .small,.sndrow .small{flex:none;margin:0}.sndrow{align-items:flex-end}.sndrow select{width:100%}

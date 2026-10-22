@@ -27,6 +27,7 @@
  <label class="tg"><input type="checkbox" id="wdOn"><span data-tx="wdOn"></span></label>
  <label><span data-tx="wdTime"></span><input type="time" id="wdTime"></label><label><span data-tx="wdPri"></span><select id="wdPri" class="pri"></select></label>
  <label class="tg"><input type="checkbox" id="snd"><span data-tx="snd"></span></label>
+ <h3 data-tx="sndPerPri"></h3><div class="sndPick"></div><p class="sub" data-tx="sndNote"></p>
  <button class="big" id="perm" data-tx="perm"></button><p class="sub" id="permStat"></p>
  <div class="row"><button class="soft lv-needed" data-test="needed"></button><button class="soft lv-important" data-test="important"></button><button class="soft lv-urgent" data-test="urgent"></button></div><p class="sub" id="nextR"></p></div>
  <div class="card"><h2 data-tx="taskH"></h2>
@@ -62,6 +63,11 @@
 <section id="tab-more" class="tab">
  <div class="card"><h2 data-tx="langH"></h2><select id="lang" class="full" aria-label="Language"></select></div>
  <div class="card"><h2 data-tx="themeH"></h2><div class="pal" id="pal"></div><label><span data-tx="accent"></span><input type="color" id="accent"></label><button class="soft small" id="accReset" data-tx="accReset"></button></div>
+ <div class="card" id="sounds"><h2 data-tx="sndH"></h2><p class="sub" data-tx="sndIntro"></p><ul id="sndList" class="sndl"></ul>
+  <h3 data-tx="sndPerPri"></h3><div class="sndPick"></div>
+  <h3 data-tx="sndMine"></h3><ul id="myList" class="sndl"></ul>
+  <button class="soft" type="button" id="sndAddB" data-tx="sndAdd"></button><input type="file" id="sndFile" accept="audio/*,.mp3,.wav,.ogg,.m4a" class="hidden">
+  <p class="sub" data-tx="sndHint"></p><p class="sub" id="sndMsg" role="status"></p><p class="sub" data-tx="sndNote"></p></div>
  <div class="card"><h2 data-tx="sugH"></h2><form id="sForm"><textarea id="sText" rows="4" maxlength="1000" data-ip="sugPh" required></textarea>
  <label><span data-tx="type"></span><select id="sType"><option value="Upgrade" data-tx="stUp"></option><option value="Downgrade" data-tx="stDown"></option><option value="Improvement" data-tx="stImp"></option><option value="Bug" data-tx="stBug"></option></select></label>
  <div class="row"><span data-tx="rating"></span><div id="stars" class="stars"></div></div>
