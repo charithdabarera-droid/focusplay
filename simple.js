@@ -7,7 +7,7 @@ var BACK='<button type="button" class="sm-back" data-go="home"><span class="sm-a
 function kidsActive(){return document.body.classList.contains('kidsmode')||!!(S.get('kids',{}).on)}
 function syncTheme(){document.documentElement.setAttribute('data-th',(window.TH&&TH.p)||'sage')}
 var _ap=applyTheme;applyTheme=function(){_ap();syncTheme()};syncTheme();
-function stopAll(){clearInterval(tIv);tIv=null;tEnd=0;clearInterval(brIv);brIv=null;clearInterval(gIv);gIv=null;stopNoise()}
+function stopAll(){clearInterval(tIv);tIv=null;tEnd=0;clearInterval(brIv);brIv=null;if(gIv&&gIv.stop)gIv.stop();gIv=null;stopNoise()}
 function tile(k,e,c){return '<button type="button" class="sm-tile '+c+'" data-go="'+k+'" aria-label="'+esc(t('sm'+k))+'"><span class="sm-ico" aria-hidden="true">'+e+'</span><span class="sm-tl">'+esc(t('sm'+k))+'</span></button>'}
 function shell(inner){return '<div class="sm-top"><span class="sm-badge">'+esc(t('smLabel'))+'</span></div>'+inner}
 function render(){if(!root)return;stopAll();var h='';
@@ -41,10 +41,7 @@ function startNoise(){try{var c=getAC(),len=c.sampleRate*4,buf=c.createBuffer(1,
  var n=c.createBufferSource();n.buffer=buf;n.loop=true;var f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=900;var g=c.createGain();g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.35,c.currentTime+1.5);n.connect(f);f.connect(g);g.connect(c.destination);n.start();noise={n:n,g:g,c:c}}catch(e){noise=null}}
 function stopNoise(){if(!noise)return;var x=noise;noise=null;try{x.g.gain.linearRampToValueAtTime(0,x.c.currentTime+.6);setTimeout(function(){try{x.n.stop()}catch(e){}},700)}catch(e){}}
 // game: tap the bubble
-function initGame(){score=0;var p=$('#smPond'),C=['#f7c6b5','#bfe3d0','#cfc3ee','#bcd9f2','#f6e2a8'];
- var spawn=function(){if(p.children.length>=4)return;var b=document.createElement('button');b.type='button';b.className='sm-bub';b.setAttribute('aria-label',t('smTap'));var sz=72+Math.random()*28|0;b.style.width=b.style.height=sz+'px';b.style.insetInlineStart=(4+Math.random()*(100-8-sz/3.2))+'%';b.style.background='radial-gradient(circle at 32% 28%,#fff,'+C[Math.random()*C.length|0]+')';b.style.animationDuration=(6+Math.random()*3)+'s';
-  b.onclick=function(){if(b.classList.contains('pop'))return;b.classList.add('pop');score++;$('#smScore').textContent=NF(score);playId('bubble_pop');vibrate(20);setTimeout(function(){b.remove()},250)};b.addEventListener('animationend',function(e){if(e.animationName==='smrise')b.remove()});p.appendChild(b)};
- spawn();gIv=setInterval(spawn,1100)}
+function initGame(){score=0;var stop=bubbleGame($('#smPond'),{label:t('smTap'),onPop:function(n){score+=n;$('#smScore').textContent=NF(score)}});gIv={stop:stop}}
 // confirm back to full
 function confirmFull(){var d=document.createElement('div');d.className='sm-dlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');d.innerHTML='<div class="sm-dbox"><p class="sm-dq">'+esc(t('smToFullQ'))+'</p><div class="sm-drow"><button type="button" class="sm-no">'+esc(t('smNo'))+'</button><button type="button" class="sm-yes">'+esc(t('smYes'))+'</button></div></div>';document.body.appendChild(d);d.querySelector('.sm-yes').focus();
  d.querySelector('.sm-no').onclick=function(){d.remove();$('#smFullB').focus()};d.querySelector('.sm-yes').onclick=function(){d.remove();setMode('full')}}

@@ -307,8 +307,8 @@ body.simplemode>header,body.simplemode>main,body.simplemode>nav{display:none}
 @media (prefers-reduced-motion:reduce){.sm-circle{transition:none}.sm-panel.run .sm-clock{animation:none}}
 .sm-say{text-align:center;font-size:30px;font-weight:800;margin:0}
 .sm-pond{position:relative;height:440px;border-radius:28px;background:var(--sm-card);overflow:hidden}
-#simple .sm-bub{position:absolute;bottom:-110px;border-radius:50%;padding:0;min-height:0;box-shadow:inset -6px -8px 14px #0000000f,0 6px 14px #0000001a;animation:smrise linear forwards}
-#simple .sm-bub.pop{animation:smpop .25s ease-out forwards}
+#simple .sm-bub,.gpond .sm-bub{position:absolute;bottom:-110px;border-radius:50%;padding:0;min-height:0;box-shadow:inset -6px -8px 14px #0000000f,0 6px 14px #0000001a;animation:smrise linear forwards}
+#simple .sm-bub.pop,.gpond .sm-bub.pop{animation:smpop .25s ease-out forwards}
 @keyframes smrise{to{transform:translateY(-580px)}}
 @keyframes smpop{to{transform:scale(1.5);opacity:0}}
 .sm-hint{text-align:center;margin:0;color:var(--sm-mute);font-size:20px}
@@ -332,3 +332,42 @@ body.simplemode>header,body.simplemode>main,body.simplemode>nav{display:none}
 .ask-pic.simp i:nth-child(1){background:#ffd9c9}.ask-pic.simp i:nth-child(2){background:#cdeedd}.ask-pic.simp i:nth-child(3){background:#dcd3fb}.ask-pic.simp i:nth-child(4){background:#cfe6fb}
 .ask-later{background:none!important;color:var(--mute);margin-top:10px;width:100%;min-height:52px;text-decoration:underline}
 .sm-tg{font-size:18px}
+/* ===== Full-screen game pop-up (v18) ===== */
+.gcard{position:relative}.grid .gcard{min-height:128px;border-radius:24px;padding:14px 10px}.gcard .gn{font-weight:700;font-size:16px}.gcard small{font-size:13px;line-height:1.3}
+.gcard .gbest{position:absolute;top:8px;inset-inline-end:10px;font-style:normal;font-size:12px;font-weight:700;color:var(--gi);background:var(--gsoft);border-radius:99px;padding:2px 8px}
+body.gopen{overflow:hidden}
+.gov{position:fixed;inset:0;z-index:9;background:color-mix(in srgb,var(--g) 14%,var(--bg));display:flex;justify-content:center;animation:govin .28s cubic-bezier(.2,.8,.3,1)}
+.gov.closing{animation:govout .22s ease-in forwards}
+@keyframes govin{from{opacity:0;transform:translateY(24px) scale(.98)}}
+@keyframes govout{to{opacity:0;transform:translateY(24px) scale(.98)}}
+.gwin{width:100%;max-width:640px;height:100%;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom));overflow-y:auto}
+.gtop{display:flex;align-items:center;gap:10px;margin-bottom:10px}.gtop h2{flex:1;margin:0;font-size:20px;text-align:center}
+.gx{width:56px;height:56px;min-height:56px;padding:0;border-radius:50%;background:var(--card);font-size:22px;box-shadow:0 4px 14px #0000000f;flex:none}
+#gTimer{min-width:86px;text-align:center;font-variant-numeric:tabular-nums;font-size:17px}#gTimer.low{background:color-mix(in srgb,var(--imp) 30%,var(--card));color:var(--ink)}
+.gscr{flex:1;display:flex;flex-direction:column;min-height:0}
+#gStart,#gEnd{justify-content:center;align-items:center;text-align:center;gap:6px;background:var(--card);border-radius:30px;padding:24px 18px;box-shadow:0 8px 30px #0000000d}
+.gs-emo{font-size:72px;width:128px;height:128px;border-radius:50%;background:var(--gsoft);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+#gStart h3{font-size:26px;margin:4px 0}.gs-how{font-size:18px;color:var(--mute);margin:0 0 4px}.gs-best{color:var(--gi);font-weight:600;margin:4px 0}
+#gStart .seg{margin:12px 0}
+.gbig{width:100%;max-width:360px;min-height:64px;font-size:22px;border-radius:22px;margin-top:10px}
+#gEnd .soft{max-width:360px;min-height:56px}
+.ghud{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:20px;padding:8px 10px 8px 16px;margin-bottom:10px}
+.gsc{display:flex;align-items:baseline;gap:8px}.gsc small{color:var(--mute)}.gsc b{font-size:26px;color:var(--gi);font-variant-numeric:tabular-nums;display:inline-block}
+.gsc.bump b{animation:gbump .3s ease-out}@keyframes gbump{40%{transform:scale(1.25)}}
+.gbv{flex:1;color:var(--mute);font-size:14px;text-align:end}
+.ghud #gPause{width:56px;min-height:48px;margin:0;font-size:18px}
+#gBody{flex:1;display:flex;flex-direction:column;justify-content:center;background:var(--card);border-radius:26px;padding:14px;min-height:0;position:relative}
+.gov.paused #gBody{filter:blur(4px);opacity:.5;pointer-events:none}.gov.paused .sm-bub{animation-play-state:paused!important}
+.ghost-b{background:none;color:var(--mute);margin-top:6px;min-height:48px;text-decoration:underline}
+.ge-art{font-size:56px}.ge-msg{font-size:20px;font-weight:600;margin:0 0 8px}.ge-lbl{margin:0;color:var(--mute)}
+.ge-score{font-size:64px;font-weight:800;color:var(--gi);line-height:1.1;font-variant-numeric:tabular-nums}
+.ge-new{background:var(--gsoft);color:var(--gi);font-weight:700;padding:6px 14px;border-radius:99px;margin:4px 0}
+/* bubble game in full app */
+.bhud{display:flex;justify-content:space-between;font-weight:700;color:var(--mute);padding:0 6px 8px}.bcombo{color:var(--gi)}
+.gpond{flex:1;min-height:360px;height:auto;background:linear-gradient(180deg,var(--gsoft),var(--field))}
+.gpond .sm-bub{animation-name:gbrise}@keyframes gbrise{to{transform:translateY(-120vh)}}
+.sm-bub[class*=sp-]{font-size:30px;display:flex;align-items:center;justify-content:center}
+.sm-bub.still{bottom:auto!important;animation-name:smfade!important;animation-timing-function:ease-in-out!important}@keyframes smfade{0%,100%{opacity:0}15%,85%{opacity:1}}
+.bfloat{position:absolute;font-weight:800;color:var(--gi);font-size:22px;pointer-events:none;animation:bfl .9s ease-out forwards}@keyframes bfl{to{transform:translateY(-40px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.gov,.gov.closing,.gsc.bump b,.bfloat{animation:none!important}.gov.closing{opacity:0}}
+@media (min-width:700px){.gwin{padding-top:24px}}

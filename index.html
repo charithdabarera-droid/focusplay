@@ -8,9 +8,8 @@
 <section id="tab-play" class="tab active">
  <button type="button" class="kidscard" id="kidsGo"><span class="kface" aria-hidden="true"><i></i><i></i></span><span class="ktxt"><b data-tx="kidsBtn"></b><small data-tx="kidsSub"></small></span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
  <button class="big primary" id="surprise" data-tx="surprise"></button>
- <p class="sub center" id="gSess"></p><div class="seg" id="gLen"></div>
+ <p class="sub center" id="gSess"></p>
  <div class="grid" id="gameList"></div>
- <div id="gameArea" class="card hidden"><div class="row"><h2 id="gTitle"></h2><span id="gTimer" class="pill"></span><button class="soft small" id="gPause" type="button"></button></div><div id="gBody"></div><button class="soft" id="gExit" data-tx="finish"></button></div>
 </section>
 <section id="tab-want" class="tab">
  <div class="card"><h2 data-tx="wantH"></h2><p class="streak" id="streak"></p>
@@ -96,6 +95,12 @@
   <div class="row"><button class="primary" id="exp" data-tx="export"></button><button class="soft" id="impB" data-tx="import"></button></div><input type="file" id="imp" accept="application/json,.json" class="hidden"><p class="sub" id="bkMsg"></p></div></div></div></div>
 </section>
 </main>
+<div id="gameArea" class="gov hidden" role="dialog" aria-modal="true" aria-labelledby="gTitle"><div class="gwin">
+ <div class="gtop"><button type="button" id="gX" class="gx" data-al="gClose" aria-label="Close">✕</button><h2 id="gTitle"></h2><span id="gTimer" class="pill" dir="ltr" role="timer"></span></div>
+ <div id="gStart" class="gscr"><div class="gs-emo" id="gsEmoji" aria-hidden="true"></div><h3 id="gsName"></h3><p class="gs-how" id="gsHow"></p><p class="gs-best" id="gsBest"></p><div class="seg" id="gLen"></div><button type="button" class="primary gbig" id="gGo"><span aria-hidden="true">▶ </span><span data-tx="gPlay"></span></button></div>
+ <div id="gPlay" class="gscr hidden"><div class="ghud"><span class="gsc"><small data-tx="gScore"></small><b id="gScoreV">0</b></span><span id="gBestV" class="gbv"></span><button type="button" class="soft small" id="gPause"></button></div><div id="gBody"></div><button type="button" class="ghost-b" id="gExit" data-tx="finish"></button></div>
+ <div id="gEnd" class="gscr hidden"><div class="ge-art" aria-hidden="true">🌿</div><p id="gEndMsg" class="ge-msg"></p><p class="ge-lbl" data-tx="gScore"></p><div id="gEndScore" class="ge-score"></div><p id="gNewBest" class="ge-new hidden" data-tx="gNewBest"></p><p id="gEndBest" class="gs-best"></p><button type="button" class="primary gbig" id="gAgain" data-tx="playAgain"></button><button type="button" class="soft" id="gClose" data-tx="gCloseB"></button></div>
+</div></div>
 <div id="toast" class="hidden lv-needed" role="status" aria-live="polite"><p id="toastMsg"></p></div>
 <div id="card" class="hidden"><div class="cardpop lv-important" role="dialog"><b class="badge" data-tx="badgeImp"></b><h2 id="cardT"></h2><p id="cardM"></p><button class="big" id="cardOk" data-tx="gotIt"></button></div></div>
 <div id="pfree" class="hidden"><p data-tx="pfTitle"></p><div class="big-t" id="pfT" dir="ltr"></div><p data-ih="pfMsg"></p><button class="big ghost" id="pfStop" data-tx="endEarly"></button></div>
