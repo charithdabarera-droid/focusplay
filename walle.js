@@ -53,40 +53,35 @@ function getQuote(){return load('quotes.json').then(function(d){return {x:d[idxF
 function defWL(){var l=F.lang();return WL.indexOf(l)>=0?l:'en'}
 // ---------- speech
 function speak(text,lang){try{if(!('speechSynthesis' in window))return F.toast(t('wNoTTS'),3000);var u=new SpeechSynthesisUtterance(text);u.lang=BCP[lang]||lang;u.rate=.85;var v=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.replace('_','-').toLowerCase().indexOf(u.lang.slice(0,2).toLowerCase())===0})[0];if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
-// ---------- chat UI
-var chat=null;
-function say(html,cls){var d=document.createElement('div');d.className='wmsg '+(cls||'w-bot');d.innerHTML=html;chat.appendChild(d);while(chat.children.length>14)chat.removeChild(chat.firstChild);requestAnimationFrame(function(){d.classList.add('in')});d.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'});return d}
-function chips(list){$('#wChips').innerHTML=list.map(function(c){return '<button type="button" class="chip" data-c="'+c[0]+'">'+esc(c[1])+'</button>'}).join('');$$('#wChips .chip').forEach(function(b){b.onclick=function(){act(b.dataset.c)}})}
-function base(){chips([['word',t('wWord')],['phrase',t('wPhrase')],['quote',t('wQuote')]])}
-function spk(text,l){return '<button type="button" class="spk" data-s="'+esc(text)+'" data-l="'+l+'" aria-label="'+esc(t('wListen'))+'">🔊 '+esc(t('wListen'))+'</button>'}
-function wire(d){$$('.spk',d).forEach(function(b){b.onclick=function(){sfx('boop');speak(b.dataset.s,b.dataset.l)}})}
-function fail(){say(esc(t('wNetErr')));sfx('hmm')}
-var showing={};
-function showWord(more){if(more)bump('w_'+(CFG.wl||defWL())+'_'+CFG.lv);var th=say('<i class="dots"><b></b><b></b><b></b></i>');getWord().then(function(r){th.remove();var x=r.x,rtl=r.l==='ar';
-  var h='<small class="tag">'+esc(t('wWord'))+' · '+esc(NAME[r.l])+' · '+esc(t({beginner:'lvB',intermediate:'lvI',advanced:'lvA'}[CFG.lv]))+'</small><div class="big-w" lang="'+r.l+'"'+(rtl?' dir="rtl"':'')+'>'+esc(x.w)+'</div>'+
-  (x.p?'<div class="pron" dir="ltr">'+esc(x.p)+(x.ipa&&x.ipa!==x.p?' · '+esc(x.ipa):'')+'</div>':'')+'<p><b>'+esc(t('wMeaning'))+':</b> <i>'+esc(x.pos||'')+'</i> '+esc(x.m)+'</p>'+
-  (x.e?'<p><b>'+esc(t('wExample'))+':</b> <span lang="'+r.l+'"'+(rtl?' dir="rtl"':'')+'>'+esc(x.e)+'</span>'+(x.er?'<br><small dir="ltr">'+esc(x.er)+'</small>':'')+(x.et?'<br><small>“'+esc(x.et)+'”</small>':'')+'</p>':'')+
-  '<div class="row">'+spk(x.w,r.l)+(x.e?spk(x.e,r.l).replace(esc(t('wListen')),esc(t('wExample'))):'')+'</div>';
-  wire(say(h,'w-bot card-b'));sfx('trill');chips([['wordMore',t('wAnother')],['phrase',t('wPhrase')],['quote',t('wQuote')]])},function(){th.remove();fail()})}
-function showPhrase(more){if(more)bump('p_'+CFG.pl);var th=say('<i class="dots"><b></b><b></b><b></b></i>');getPhrase().then(function(r){th.remove();var x=r.x,rtl=r.l==='ar';
-  var h='<small class="tag">'+esc(t('wPhrase'))+' · '+esc(NAME[r.l])+' · '+esc(t('wDay',{n:r.i+1}))+' · '+esc(t('wu_'+x.u))+'</small><div class="big-w" lang="'+r.l+'"'+(rtl?' dir="rtl"':'')+'>'+esc(x.p)+'</div>'+(x.r?'<div class="pron" dir="ltr">'+esc(x.r)+'</div>':'')+'<p>“'+esc(x.t)+'”</p><div class="row">'+spk(x.p,r.l)+'</div>';
-  wire(say(h,'w-bot card-b'));sfx('chirp');chips([['phraseMore',t('wAnother')],['word',t('wWord')],['quote',t('wQuote')]])},function(){th.remove();fail()})}
-function showQuote(more){if(more)bump('q');var th=say('<i class="dots"><b></b><b></b><b></b></i>');getQuote().then(function(r){th.remove();var x=r.x;
-  wire(say('<small class="tag">'+esc(t('wQuote'))+'</small><blockquote lang="en" dir="ltr">“'+esc(x.q)+'”</blockquote><p class="att" dir="ltr">— '+esc(x.a)+', <i>'+esc(x.s)+'</i></p><div class="row">'+spk(x.q+' — '+x.a,'en')+'</div>','w-bot card-b'));sfx('boop');chips([['quoteMore',t('wAnother')],['word',t('wWord')],['phrase',t('wPhrase')]])},function(){th.remove();fail()})}
-function act(c){closePop();({word:function(){showWord()},wordMore:function(){showWord(1)},phrase:function(){showPhrase()},phraseMore:function(){showPhrase(1)},quote:function(){showQuote()},quoteMore:function(){showQuote(1)}}[c]||base)()}
-// Single pluggable "brain": swap this for a real LLM call later. Returns a Promise of {text, action}.
-var INT=[['word',/\b(word|vocab|mot|palabra|wort|parola|palavra|単語|词|단어|كلمة|शब्द|kata|kelime)\b/i],['phrase',/\b(phrase|sentence|say|frase|satz|フレーズ|句|문장|عبارة|cümle)\b/i],['quote',/\b(quote|motivat|inspir|wisdom|citation|cita|zitat|citazione|名言|名言|명언|اقتباس|प्रेरणा|kutipan|söz)\b/i],['hi',/^(hi|hello|hey|hola|bonjour|salut|hallo|ciao|olá|こんにちは|你好|안녕|مرحبا|سلام|namaste|halo)\b/i],['thanks',/\b(thank|merci|gracias|danke|grazie|obrigad|ありがと|谢谢|고마|감사|شكرا|shukriya|terima kasih|teşekkür)/i]];
+// ---------- single card: Word / Phrase / Quote, swaps in place (no feed, no history)
+var cur='word',seq=0,lis={a:null,b:null};
+function bubble(txt){var p=$('#wSay');if(!p)return;p.classList.remove('in');clearTimeout(bubble._t);setTimeout(function(){p.textContent=txt;if(txt)requestAnimationFrame(function(){p.classList.add('in')})},RM?0:120);bubble._t=setTimeout(function(){p.classList.remove('in')},6000)}
+function lvTag(x,l){if(x.lvl)return x.lvl;return t({beginner:'lvB',intermediate:'lvI',advanced:'lvA'}[CFG.lv])}
+function setBtns(a,b){lis.a=a;lis.b=b;$('#wLis').textContent='🔊 '+t('wListen');$('#wLisEx').textContent='🔊 '+t('wListenEx');$('#wLisEx').classList.toggle('hidden',!b);$('#wLis').disabled=!a}
+function wordHTML(r){var x=r.x,rtl=r.l==='ar',D=rtl?' dir="rtl"':'';return '<small class="tag">'+esc(NAME[r.l])+' · '+esc(lvTag(x,r.l))+'</small><div class="wword" lang="'+r.l+'"'+D+'>'+esc(x.w)+'</div>'+
+ (x.p?'<div class="pron" dir="ltr">'+esc(x.p)+'</div>':'')+'<p class="wmean">'+(x.pos?'<i>'+esc(x.pos)+'</i> ':'')+esc(x.m)+'</p>'+
+ (x.e?'<p class="wex"><span lang="'+r.l+'"'+D+'>'+esc(x.e)+'</span>'+(x.er?'<br><small dir="ltr">'+esc(x.er)+'</small>':'')+(x.et?'<br><small>“'+esc(x.et)+'”</small>':'')+'</p>':'')}
+function phraseHTML(r){var x=r.x,rtl=r.l==='ar';return '<small class="tag">'+esc(NAME[r.l])+' · '+esc(t('wu_'+x.u))+'</small><div class="wword wphr" lang="'+r.l+'"'+(rtl?' dir="rtl"':'')+'>'+esc(x.p)+'</div>'+(x.r?'<div class="pron" dir="ltr">'+esc(x.r)+'</div>':'')+'<p class="wmean">“'+esc(x.t)+'”</p>'}
+function quoteHTML(r){var x=r.x;return '<blockquote lang="en" dir="ltr">“'+esc(x.q)+'”</blockquote><p class="att" dir="ltr">— '+esc(x.a)+(x.s?', <i>'+esc(x.s)+'</i>':'')+'</p>'}
+function show(f,more){cur=f;$$('.wseg button').forEach(function(b){var on=b.dataset.f===f;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+ if(more)bump(f==='word'?'w_'+(CFG.wl||defWL())+'_'+CFG.lv:f==='phrase'?'p_'+CFG.pl:'q');
+ var my=++seq,body=$('#wBody');body.classList.add('out');var t0=Date.now();
+ (f==='word'?getWord():f==='phrase'?getPhrase():getQuote()).then(function(r){if(my!==seq)return;
+  var h=f==='word'?wordHTML(r):f==='phrase'?phraseHTML(r):quoteHTML(r);
+  setTimeout(function(){if(my!==seq)return;body.innerHTML=h;body.scrollTop=0;body.classList.remove('out');
+   if(f==='word')setBtns([r.x.w,r.l],r.x.e?[r.x.e,r.l]:null);else if(f==='phrase')setBtns([r.x.p,r.l],null);else setBtns([r.x.q+' — '+r.x.a,'en'],null)},RM?0:Math.max(0,200-(Date.now()-t0)))
+  if(more)sfx(f==='word'?'trill':'chirp')},function(){if(my!==seq)return;body.classList.remove('out');body.innerHTML='<p class="sub">'+esc(t('wNetErr'))+'</p>';setBtns(null,null);sfx('hmm')})}
+function act(c){closePop();var f=c.replace('More','');if(['word','phrase','quote'].indexOf(f)<0)f='word';show(f,c!==f);var card=$('.wcard');card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}
+// Single pluggable "brain": swap this for a real LLM call later. Returns a Promise of {text, action}. Replies show in the small speech bubble.
+var INT=[['word',/\b(word|vocab)\b/i],['phrase',/\b(phrase|sentence)\b/i],['quote',/\b(quote|motivat|inspir)\b/i]];
 window.walleBrain=window.walleBrain||function(text){for(var i=0;i<INT.length;i++)if(INT[i][1].test(text))return Promise.resolve({action:INT[i][0]});return Promise.resolve({action:'unknown'})};
-function onText(v){say(esc(v),'w-me');walleBrain(v).then(function(r){var a=r&&r.action;if(r&&r.text){say(esc(r.text));return}
- if(a==='word'||a==='phrase'||a==='quote')act(a);else if(a==='hi'){say(esc(t('wHi')));sfx('chirp');base()}else if(a==='thanks'){say('💚');sfx('trill');happy($('#wBot'))}else{say(esc(t('wDunno')));sfx('hmm');base()}})}
 // popup menu
 function openPop(){var p=$('#wPop');p.classList.remove('hidden');requestAnimationFrame(function(){p.classList.add('in')});var b=p.querySelector('.wopt');if(b)b.focus()}
 function closePop(){var p=$('#wPop');p.classList.remove('in');p.classList.add('hidden')}
 // ---------- online gating
-var probing=false;
+var probing=false,greeted=false;
 function probe(){if(!navigator.onLine)return Promise.resolve(false);return fetch('walle/stats.json?probe='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok},function(){return false})}
-function gate(){if(probing)return;probing=true;probe().then(function(ok){probing=false;$('#wOff').classList.toggle('hidden',ok);$('#wOn').classList.toggle('hidden',!ok);if(ok&&!chat.children.length){say(esc(t('wHi')));base();sfx('chirp')}})}
-window.addEventListener('online',gate);window.addEventListener('offline',gate);
+function gate(){if(probing)return;probing=true;probe().then(function(ok){probing=false;$('#wOff').classList.toggle('hidden',ok);$('#wOn').classList.toggle('hidden',!ok);if(ok&&!greeted){greeted=true;bubble(t('wHi'));show(cur);sfx('chirp')}})}
 // ---------- settings & reminders
 function fillSel(){$('#wWL').innerHTML=WL.map(function(l){return '<option value="'+l+'">'+NAME[l]+'</option>'}).join('');$('#wWL').value=CFG.wl||defWL();$('#wPL').innerHTML=PL.map(function(l){return '<option value="'+l+'">'+NAME[l]+'</option>'}).join('');$('#wPL').value=CFG.pl;$('#wLv').value=CFG.lv}
 function renderRem(){var F3=[['word','wWord'],['phrase','wPhrase'],['quote','wQuote']];
@@ -152,13 +147,16 @@ function lockBtn(){var b=$('#kLock'),tm=null;var go=function(){b.classList.remov
 // native Android back button
 (function(){var C=window.Capacitor,App=C&&C.Plugins&&C.Plugins.App;if(!App||!App.addListener)return;App.addListener('backButton',function(e){if(K.on)return;if(!$('#wPop').classList.contains('hidden'))return closePop();if(e&&e.canGoBack)history.back();else App.exitApp()})})();
 // ---------- init
-function init(){chat=$('#wChat');mount($('#wBot'));mount($('#kBot'));$('#wBot').tabIndex=0;
+function init(){mount($('#wBot'));mount($('#kBot'));$('#wBot').tabIndex=0;
  $('#wBot').addEventListener('tapbot',function(){setTimeout(openPop,350)});$('#kBot').addEventListener('tapbot',function(){});
- $('#wMenuB').onclick=openPop;$('#wPopX').onclick=closePop;$('#wPop').addEventListener('click',function(e){if(e.target.id==='wPop')closePop()});$$('#wPop .wopt').forEach(function(b){b.onclick=function(){sfx('chirp');act(b.dataset.f)}});
+$('#wPopX').onclick=closePop;$('#wPop').addEventListener('click',function(e){if(e.target.id==='wPop')closePop()});$$('#wPop .wopt').forEach(function(b){b.onclick=function(){sfx('chirp');act(b.dataset.f)}});
  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closePop();if(!K.on||$('#pinDlg').classList.contains('hidden')===false)pinClose()}});
- $('#walleForm').onsubmit=function(e){e.preventDefault();var v=$('#wText').value.trim();if(!v)return;$('#wText').value='';onText(v)};
+ $$('.wseg button').forEach(function(b){b.onclick=function(){if(b.dataset.f!==cur){sfx('boop');show(b.dataset.f)}}});
+ $('#wNext').onclick=function(){show(cur,1)};
+ $('#wLis').onclick=function(){if(lis.a){sfx('boop');speak(lis.a[0],lis.a[1])}};$('#wLisEx').onclick=function(){if(lis.b){speak(lis.b[0],lis.b[1])}};
+ $('#wGear').onclick=function(){F.openSettings&&F.openSettings('walle')};
  $('#wRetry').onclick=gate;
- $('#wWL').onchange=function(){CFG.wl=$('#wWL').value;save()};$('#wLv').onchange=function(){CFG.lv=$('#wLv').value;save()};$('#wPL').onchange=function(){CFG.pl=$('#wPL').value;save()};
+ $('#wWL').onchange=function(){CFG.wl=$('#wWL').value;save();if(greeted&&cur==='word')show('word')};$('#wLv').onchange=function(){CFG.lv=$('#wLv').value;save();if(greeted&&cur==='word')show('word')};$('#wPL').onchange=function(){CFG.pl=$('#wPL').value;save();if(greeted&&cur==='phrase')show('phrase')};
  $$('nav button').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.t==='walle')gate()})});
  $('#kidsGo').onclick=function(){if(!K.h)pinOpen('set',function(ok){if(ok)kidsOn()});else kidsOn()};
  $('#kTalk').onclick=talk;lockBtn();
@@ -167,7 +165,7 @@ function init(){chat=$('#wChat');mount($('#wBot'));mount($('#kBot'));$('#wBot').
  document.addEventListener('keydown',function(e){if($('#pinDlg').classList.contains('hidden')||!$('#pinChk').classList.contains('hidden'))return;if(/^\d$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del')});
  $('#pinX').onclick=pinClose;$('#pinF').onclick=forgot;$('#pinChkGo').onclick=chkGo;
  $('#pinChg').onclick=function(){if(!K.h)pinOpen('set');else pinOpen('change')};
- F.onLang(function(){fillSel();renderRem();$('#pinChg').textContent=K.h?t('pinChange'):t('pinSet');if(K.on)$('#kMsg').textContent=t('kTalk')});fillSel();renderRem();$('#pinChg').textContent=K.h?t('pinChange'):t('pinSet');
+ F.onLang(function(){fillSel();if(greeted)show(cur);$('#wGear').setAttribute('aria-label',t('sWalle'));renderRem();$('#pinChg').textContent=K.h?t('pinChange'):t('pinSet');if(K.on)$('#kMsg').textContent=t('kTalk')});fillSel();renderRem();$('#pinChg').textContent=K.h?t('pinChange'):t('pinSet');
  if(K.on){document.body.classList.add('kidsmode');$('#kids').classList.remove('hidden');try{history.pushState({kids:1},'')}catch(e){}}
  if($('#tab-walle').classList.contains('active'))gate()}
 init();

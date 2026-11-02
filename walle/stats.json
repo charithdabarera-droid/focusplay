@@ -21,54 +21,64 @@
  },
  "words": {
   "en": {
-   "beginner": 600,
-   "intermediate": 600,
-   "advanced": 600
+   "beginner": 1483,
+   "intermediate": 2428,
+   "advanced": 625,
+   "with_example": 4536
   },
   "fr": {
-   "beginner": 500,
-   "intermediate": 500,
-   "advanced": 500
+   "beginner": 492,
+   "intermediate": 487,
+   "advanced": 488,
+   "with_example": 1467
   },
   "es": {
-   "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "beginner": 387,
+   "intermediate": 385,
+   "advanced": 384,
+   "with_example": 815
   },
   "de": {
-   "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "beginner": 430,
+   "intermediate": 439,
+   "advanced": 425,
+   "with_example": 548
   },
   "it": {
-   "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "beginner": 387,
+   "intermediate": 388,
+   "advanced": 374,
+   "with_example": 566
   },
   "pt": {
-   "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "beginner": 389,
+   "intermediate": 386,
+   "advanced": 380,
+   "with_example": 838
   },
   "ja": {
-   "beginner": 500,
-   "intermediate": 500,
-   "advanced": 500
+   "beginner": 1010,
+   "intermediate": 2787,
+   "advanced": 1421,
+   "with_example": 5218
   },
   "zh": {
-   "beginner": 481,
-   "intermediate": 481,
-   "advanced": 483
+   "beginner": 1031,
+   "intermediate": 1336,
+   "advanced": 1151,
+   "with_example": 3518
   },
   "ko": {
    "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "intermediate": 396,
+   "advanced": 399,
+   "with_example": 966
   },
   "ar": {
-   "beginner": 400,
-   "intermediate": 400,
-   "advanced": 400
+   "beginner": 394,
+   "intermediate": 396,
+   "advanced": 375,
+   "with_example": 381
   }
  },
  "phrases": {

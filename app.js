@@ -231,25 +231,8 @@ document.addEventListener('visibilitychange',function(){lastTick=Date.now();S.se
 function pfStop(done){clearInterval(pfIv);pfEnd=0;$('#pfree').classList.add('hidden');if(done){chimes(2,true);remind(t('pfDoneT'),t('pfDoneM'),'important')}}
 $$('[data-pf]').forEach(function(b){b.onclick=function(){pfEnd=Date.now()+b.getAttribute('data-pf')*6e4;$('#pfree').classList.remove('hidden');chime(true);var up=function(){var s=Math.max(0,Math.round((pfEnd-Date.now())/1000));$('#pfT').textContent=fmtClock(s);if(s<=0)pfStop(true)};up();clearInterval(pfIv);pfIv=setInterval(up,500)}});
 $('#pfStop').onclick=function(){pfStop(false)};
-// ===== Referral (PROTOTYPE ONLY)
-// NOTE: Local-only demo; NOT functional for payouts. Planned reward: $1 credit per friend who buys
-// with your code, stacking. Payout = App Store / Google Play gift cards or promo codes issued by the
-// developer. Requires a small backend to verify referrals (record code at purchase, validate receipt,
-// tally credits per code). Nothing is sent anywhere here; credits stay at $0 locally.
-var RA='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L
-var RC=new RegExp('^FOCUS-['+RA+']{4}-['+RA+']{4}$');
-// Random locally; collisions are unlikely (31^8 ≈ 8.5e11) but true per-person uniqueness needs server-side issuance.
-function genCode(){var out=[];while(out.length<8){var b=crypto.getRandomValues(new Uint8Array(16));for(var i=0;i<b.length;i++){if(b[i]<248&&out.length<8)out.push(RA[b[i]%31])}}return 'FOCUS-'+out.slice(0,4).join('')+'-'+out.slice(4).join('')}
-var REF=S.get('ref',null);
-if(!REF){REF={mine:genCode(),friend:''};S.set('ref',REF)}else if(!RC.test(REF.mine)){REF.oldCode=REF.mine;REF.mine=genCode();S.set('ref',REF)} // migrate legacy FOCUS-XXXX
-var USD=function(n){return NF(n,{style:'currency',currency:'USD',minimumFractionDigits:0,maximumFractionDigits:0})};
-var refMsgKey='';
-function renderRef(){$('#myCode').textContent=REF.mine;$('#refP').innerHTML=t('refP',{amt:'<b>'+esc(USD(1))+'</b>'});$('#rCred').textContent=USD(REF.credits||0);$('#rCnt').textContent=NF(REF.credits||0);
- if(REF.friend)$('#rFriend').innerHTML='<p>'+esc(t('codeApplied',{c:''}))+'<b dir="ltr">'+esc(REF.friend)+'</b></p>';$('#rMsg').textContent=refMsgKey?t(refMsgKey):''}
-onLang(renderRef);
-function copyCode(){if(HAS.clip){navigator.clipboard.writeText(REF.mine).then(function(){showToast(t('copied'),3000)},function(){showToast(t('yourCode',{c:REF.mine}),5000)})}else showToast(t('yourCode',{c:REF.mine}),5000)}
-$('#rShare').onclick=function(){if(HAS.share){navigator.share({title:'FocusPlay',text:t('shareTxt',{c:REF.mine})}).catch(function(){})}else copyCode()};$('#rCopy').onclick=copyCode;
-document.addEventListener('submit',function(e){if(e.target.id!=='rForm')return;e.preventDefault();var v=$('#rIn').value.trim().toUpperCase();if(!RC.test(v))refMsgKey='badCode';else if(v===REF.mine)refMsgKey='ownCode';else{REF.friend=v;S.set('ref',REF);refMsgKey='codeSaved'}renderRef()});
+// referral feature removed in 1.1.1: clear any old saved referral data
+try{localStorage.removeItem('fp_ref')}catch(e){}
 // ===== Export / import
 $('#exp').onclick=function(){var d={app:'FocusPlay',version:4,exported:new Date().toISOString(),data:{}};for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k.indexOf('fp_')===0)d.data[k]=localStorage.getItem(k)}var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='focusplay-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);$('#bkMsg').textContent=t('bkSaved')};
 $('#impB').onclick=function(){$('#imp').click()};
@@ -296,7 +279,13 @@ $('#sndFile').onchange=function(){var f=this.files&&this.files[0],msg=$('#sndMsg
  .catch(function(e){msg.textContent=e&&e.message==='bad'?t('sndBad'):t('sndFail')})};
 onLang(renderSnd);renderSnd();
 // ===== shared API for walle.js
-window.FP={S:S,t:function(k,o){return t(k,o)},esc:esc,pad:pad,onLang:onLang,remind:function(a,b,c){return remind(a,b,c)},toast:function(m,ms){return showToast(m,ms)},getAC:getAC,fmtT:fmtT,today:function(){return today()},lang:function(){return LANG},bcp:function(){return L.langs[LANG].bcp},vibrate:vibrate,$:$,$$:$$};
+
+// ===== Settings accordion: one section open at a time
+function openAcc(id,scroll){$$('.acc').forEach(function(a){var on=a.id==='acc-'+id&&!a.classList.contains('open');if(a.id==='acc-'+id&&scroll)on=true;a.classList.toggle('open',on);a.querySelector('.acc-h').setAttribute('aria-expanded',on)});
+ if(scroll){var el=$('#acc-'+id);setTimeout(function(){el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})},60)}}
+$$('.acc-h').forEach(function(h){h.onclick=function(){openAcc(h.parentNode.id.slice(4))}});
+function openSettings(id){var b=$('nav button[data-t="more"]');if(b)b.click();openAcc(id,true)}
+window.FP={openSettings:openSettings,S:S,t:function(k,o){return t(k,o)},esc:esc,pad:pad,onLang:onLang,remind:function(a,b,c){return remind(a,b,c)},toast:function(m,ms){return showToast(m,ms)},getAC:getAC,fmtT:fmtT,today:function(){return today()},lang:function(){return LANG},bcp:function(){return L.langs[LANG].bcp},vibrate:vibrate,$:$,$$:$$};
 // ===== native notifications (Capacitor). Web behaviour unchanged when not native.
 (function(){var C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return;var LN=C.Plugins&&C.Plugins.LocalNotifications;if(!LN)return;
  var PLAT=C.getPlatform&&C.getPlatform(),granted=false,tmr=null,WINDOW_D=3,CAP=60;

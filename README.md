@@ -15,7 +15,7 @@ Plain HTML/CSS/JS with no build step. It works offline using a service worker an
   - Timing: every N minutes or at set times of day. Repeat always, on chosen weekdays, or within a date range. An optional active-hours window limits when they fire.
   - A water glass counter with a daily goal.
   - An in-app usage limit nudge, and a phone-free focus timer.
-- **More:** themes (6 palettes plus a custom accent), a suggestion box (saved locally and sent by mailto to `SUPPORT_EMAIL`), refer-a-friend ($1 stacking credits, pending store setup), privacy information, and JSON export/import of your data.
+- **Settings:** themes (6 palettes plus a custom accent), a suggestion box (saved locally and sent by mailto to `SUPPORT_EMAIL`), privacy information, and JSON export/import of your data.
 
 ## Languages
 FocusPlay is available in 20 languages: English, العربية (Arabic, RTL), Español, Français, Deutsch, Português, Italiano, Русский, 简体中文, 日本語, 한국어, हिन्दी, اردو (Urdu, RTL), বাংলা, Bahasa Indonesia, Türkçe, සිංහල, தமிழ், Filipino and Bahasa Melayu.
@@ -38,4 +38,3 @@ There are no ads, no account and no analytics. All data stays in this device's l
 ## Limitations
 - Reminders only fire while the app is open, in the foreground or a background tab. Closed-app delivery would need Web Push and a server.
 - iOS needs the app installed to the home screen for notifications. Vibration doesn't work on iOS.
-- **Refer-a-friend is a prototype only.** The planned reward is $1 back for every friend who buys with your code, and the credits stack. Codes (FOCUS-XXXX-XXXX, 8 random characters from an alphabet without 0/O/1/I/L) are generated on the device with crypto.getRandomValues and stored locally. True per-person uniqueness needs server-side issuance at store setup. and the credits counter stays at $0. Payout would be App Store or Google Play gift cards or promo codes issued by the developer. That needs a small backend to verify referrals: record the code at purchase, validate the store receipt, and tally credits per code.
