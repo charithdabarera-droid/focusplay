@@ -16,7 +16,7 @@ ShareAlike note: the Wiktionary-derived word files are redistributed under CC BY
 - Very common words are not allowed in a higher level: an Advanced word is skipped if its *wordfreq* Zipf score is above 4.3, and an Intermediate word is skipped above 5.3. Numbers and function words are kept at Beginner.
 - **Meanings** use the first, most common modern sense from **Simple English Wiktionary** (via Kaikki.org, CC BY-SA). These glosses are written for learners. The example must be a complete sentence in the same sense, contain the word, and have at least 4 words.
 - If no learner gloss exists for an Advanced word, it falls back to the **WordNet 3.0** sense with the highest SemCor count. That is used only when a full-sentence example for the same sense exists. Abstract templates ("In a … manner", "Of or relating to", "The property of being …") are rejected.
-- **Respelling** comes from the **CMU Pronouncing Dictionary**. Rules: syllables are hyphenated with maximal onset, the stressed syllable is in CAPITALS (for example responsive → rih-SPON-siv, eighty → AY-tee), and the dictionary variant is chosen by part of speech. Respellings were spot-checked by hand, and odd outputs were removed by QA.
+- **Respelling** comes from the **CMU Pronouncing Dictionary**. Rules: syllables are hyphenated with maximal onset, the stressed syllable is in CAPITALS (for example responsive → rih-SPON-siv, eighty → AY-tee), and the dictionary variant is chosen by part of speech. In v1.1.1 all Advanced entries and a random sample of 320 Beginner/Intermediate entries were reviewed by hand; weak or dictionary-style meanings were rewritten as plain modern learner definitions with natural example sentences, and 170+ respellings were hand-checked and corrected.
 
 **Japanese.** JLPT lists from the open-anki-jlpt-decks (MIT): N5–N4 → Beginner, N3–N2 → Intermediate, N1 → Advanced. Examples come from Tatoeba (CC BY 2.0 FR). Romaji is generated.
 
@@ -32,3 +32,5 @@ ShareAlike note: the Wiktionary-derived word files are redistributed under CC BY
 - odd respellings.
 
 Flagged items are removed, and 0 flags remain in the shipped files.
+
+**Extra examples (German, Italian, Arabic).** Missing examples were filled from Tatoeba sentence pairs (CC BY 2.0 FR, via ManyThings.org). A sentence is used only if the headword appears in it as a whole word (case-sensitive for German; Arabic ignores diacritics and allows the clitics و ف ب ل ال) and its English translation shares a key word with the gloss, so the sentence uses the same sense.

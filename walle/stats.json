@@ -21,10 +21,10 @@
  },
  "words": {
   "en": {
-   "beginner": 1483,
-   "intermediate": 2428,
-   "advanced": 625,
-   "with_example": 4536
+   "beginner": 1492,
+   "intermediate": 2443,
+   "advanced": 630,
+   "with_example": 4565
   },
   "fr": {
    "beginner": 492,
@@ -42,13 +42,13 @@
    "beginner": 430,
    "intermediate": 439,
    "advanced": 425,
-   "with_example": 548
+   "with_example": 1084
   },
   "it": {
    "beginner": 387,
    "intermediate": 388,
    "advanced": 374,
-   "with_example": 566
+   "with_example": 1079
   },
   "pt": {
    "beginner": 389,
@@ -78,7 +78,7 @@
    "beginner": 394,
    "intermediate": 396,
    "advanced": 375,
-   "with_example": 381
+   "with_example": 676
   }
  },
  "phrases": {
