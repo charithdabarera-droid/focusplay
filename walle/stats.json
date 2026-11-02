@@ -1,0 +1,238 @@
+{
+ "quotes": 1131,
+ "quote_authors": {
+  "Marcus Aurelius": 141,
+  "Seneca": 31,
+  "Confucius": 161,
+  "Epictetus": 14,
+  "François de La Rochefoucauld": 434,
+  "Lao Tzu": 11,
+  "Ralph Waldo Emerson": 153,
+  "Samuel Smiles": 30,
+  "James Allen": 19,
+  "Henry David Thoreau": 48,
+  "Benjamin Franklin": 53,
+  "Francis Bacon": 8,
+  "William James": 11,
+  "Aristotle": 3,
+  "Sun Tzu": 8,
+  "Arthur Schopenhauer": 5,
+  "Boethius": 1
+ },
+ "words": {
+  "en": {
+   "beginner": 600,
+   "intermediate": 600,
+   "advanced": 600
+  },
+  "fr": {
+   "beginner": 500,
+   "intermediate": 500,
+   "advanced": 500
+  },
+  "es": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  },
+  "de": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  },
+  "it": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  },
+  "pt": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  },
+  "ja": {
+   "beginner": 500,
+   "intermediate": 500,
+   "advanced": 500
+  },
+  "zh": {
+   "beginner": 481,
+   "intermediate": 481,
+   "advanced": 483
+  },
+  "ko": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  },
+  "ar": {
+   "beginner": 400,
+   "intermediate": 400,
+   "advanced": 400
+  }
+ },
+ "phrases": {
+  "fr": {
+   "total": 1654,
+   "units": {
+    "greetings": 114,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "es": {
+   "total": 1626,
+   "units": {
+    "greetings": 86,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "de": {
+   "total": 1680,
+   "units": {
+    "greetings": 140,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "it": {
+   "total": 1668,
+   "units": {
+    "greetings": 128,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "pt": {
+   "total": 1646,
+   "units": {
+    "greetings": 106,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "ja": {
+   "total": 1632,
+   "units": {
+    "greetings": 92,
+    "polite": 140,
+    "introductions": 140,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "zh": {
+   "total": 1575,
+   "units": {
+    "greetings": 51,
+    "polite": 140,
+    "introductions": 124,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 140,
+    "time": 140,
+    "work": 140,
+    "health": 140,
+    "plans": 140,
+    "everyday": 0
+   }
+  },
+  "ko": {
+   "total": 1200,
+   "units": {
+    "greetings": 14,
+    "polite": 110,
+    "introductions": 28,
+    "feelings": 113,
+    "smalltalk": 86,
+    "food": 85,
+    "travel": 82,
+    "shopping": 59,
+    "time": 124,
+    "work": 139,
+    "health": 42,
+    "plans": 127,
+    "everyday": 191
+   }
+  },
+  "ar": {
+   "total": 1474,
+   "units": {
+    "greetings": 29,
+    "polite": 140,
+    "introductions": 58,
+    "feelings": 140,
+    "smalltalk": 140,
+    "food": 140,
+    "travel": 140,
+    "shopping": 129,
+    "time": 140,
+    "work": 140,
+    "health": 138,
+    "plans": 140,
+    "everyday": 0
+   }
+  }
+ }
+}
