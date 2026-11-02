@@ -55,7 +55,6 @@ function defWL(){var l=F.lang();return WL.indexOf(l)>=0?l:'en'}
 function speak(text,lang){try{if(!('speechSynthesis' in window))return F.toast(t('wNoTTS'),3000);var u=new SpeechSynthesisUtterance(text);u.lang=BCP[lang]||lang;u.rate=.85;var v=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.replace('_','-').toLowerCase().indexOf(u.lang.slice(0,2).toLowerCase())===0})[0];if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 // ---------- single card: Word / Phrase / Quote, swaps in place (no feed, no history)
 var cur='word',seq=0,lis={a:null,b:null};
-function bubble(txt){var p=$('#wSay');if(!p)return;p.classList.remove('in');clearTimeout(bubble._t);setTimeout(function(){p.textContent=txt;if(txt)requestAnimationFrame(function(){p.classList.add('in')})},RM?0:120);bubble._t=setTimeout(function(){p.classList.remove('in')},6000)}
 function lvTag(x,l){if(x.lvl)return x.lvl;return t({beginner:'lvB',intermediate:'lvI',advanced:'lvA'}[CFG.lv])}
 function setBtns(a,b){lis.a=a;lis.b=b;$('#wLis').textContent='🔊 '+t('wListen');$('#wLisEx').textContent='🔊 '+t('wListenEx');$('#wLisEx').classList.toggle('hidden',!b);$('#wLis').disabled=!a}
 function wordHTML(r){var x=r.x,rtl=r.l==='ar',D=rtl?' dir="rtl"':'';return '<small class="tag">'+esc(NAME[r.l])+' · '+esc(lvTag(x,r.l))+'</small><div class="wword" lang="'+r.l+'"'+D+'>'+esc(x.w)+'</div>'+
@@ -70,18 +69,12 @@ function show(f,more){cur=f;$$('.wseg button').forEach(function(b){var on=b.data
   var h=f==='word'?wordHTML(r):f==='phrase'?phraseHTML(r):quoteHTML(r);
   setTimeout(function(){if(my!==seq)return;body.innerHTML=h;body.scrollTop=0;body.classList.remove('out');
    if(f==='word')setBtns([r.x.w,r.l],r.x.e?[r.x.e,r.l]:null);else if(f==='phrase')setBtns([r.x.p,r.l],null);else setBtns([r.x.q+' — '+r.x.a,'en'],null)},RM?0:Math.max(0,200-(Date.now()-t0)))
-  if(more)sfx(f==='word'?'trill':'chirp')},function(){if(my!==seq)return;body.classList.remove('out');body.innerHTML='<p class="sub">'+esc(t('wNetErr'))+'</p>';setBtns(null,null);sfx('hmm')})}
-function act(c){closePop();var f=c.replace('More','');if(['word','phrase','quote'].indexOf(f)<0)f='word';show(f,c!==f);var card=$('.wcard');card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}
-// Single pluggable "brain": swap this for a real LLM call later. Returns a Promise of {text, action}. Replies show in the small speech bubble.
-var INT=[['word',/\b(word|vocab)\b/i],['phrase',/\b(phrase|sentence)\b/i],['quote',/\b(quote|motivat|inspir)\b/i]];
-window.walleBrain=window.walleBrain||function(text){for(var i=0;i<INT.length;i++)if(INT[i][1].test(text))return Promise.resolve({action:INT[i][0]});return Promise.resolve({action:'unknown'})};
-// popup menu
-function openPop(){var p=$('#wPop');p.classList.remove('hidden');requestAnimationFrame(function(){p.classList.add('in')});var b=p.querySelector('.wopt');if(b)b.focus()}
-function closePop(){var p=$('#wPop');p.classList.remove('in');p.classList.add('hidden')}
+},function(){if(my!==seq)return;body.classList.remove('out');body.innerHTML='<p class="sub">'+esc(t('wNetErr'))+'</p>';setBtns(null,null)})}
+function act(c){var f=c.replace('More','');if(['word','phrase','quote'].indexOf(f)<0)f='word';show(f,c!==f);var card=$('.wcard');card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}
 // ---------- online gating
 var probing=false,greeted=false;
 function probe(){if(!navigator.onLine)return Promise.resolve(false);return fetch('walle/stats.json?probe='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok},function(){return false})}
-function gate(){if(probing)return;probing=true;probe().then(function(ok){probing=false;$('#wOff').classList.toggle('hidden',ok);$('#wOn').classList.toggle('hidden',!ok);if(ok&&!greeted){greeted=true;bubble(t('wHi'));show(cur);sfx('chirp')}})}
+function gate(){if(probing)return;probing=true;probe().then(function(ok){probing=false;$('#wOff').classList.toggle('hidden',ok);$('#wOn').classList.toggle('hidden',!ok);if(ok&&!greeted){greeted=true;show(cur)}})}
 // ---------- settings & reminders
 function fillSel(){$('#wWL').innerHTML=WL.map(function(l){return '<option value="'+l+'">'+NAME[l]+'</option>'}).join('');$('#wWL').value=CFG.wl||defWL();$('#wPL').innerHTML=PL.map(function(l){return '<option value="'+l+'">'+NAME[l]+'</option>'}).join('');$('#wPL').value=CFG.pl;$('#wLv').value=CFG.lv}
 function renderRem(){var F3=[['word','wWord'],['phrase','wPhrase'],['quote','wQuote']];
@@ -91,8 +84,8 @@ function renderRem(){var F3=[['word','wWord'],['phrase','wPhrase'],['quote','wQu
  $$('#wRem input[type=time]').forEach(function(x){x.onchange=function(){CFG.rem[x.dataset.f].times[+x.dataset.i]=x.value||'09:00';save()}})}
 function askPerm(){try{if('Notification' in window&&Notification.permission==='default'&&!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform()))Notification.requestPermission()}catch(e){}}
 var MSG={word:'wRemW',phrase:'wRemP',quote:'wRemQ'};
-window.__walleRem=function(){var L=[];['word','phrase','quote'].forEach(function(f){var r=CFG.rem[f];for(var i=0;i<r.n;i++)L.push({time:r.times[i],title:'Walle 🤖',body:t(MSG[f])})});return L};
-window.__walleTick=function(hm){var td=F.today(),ch=false;['word','phrase','quote'].forEach(function(f){var r=CFG.rem[f];for(var i=0;i<r.n;i++){var k=f+i+'@'+r.times[i];if(hm>=r.times[i]&&CFG.fired[k]!==td){var first=CFG.fired[k]===undefined;CFG.fired[k]=td;ch=true;if(!first||hm.slice(0,5)===r.times[i])F.remind('Walle 🤖',t(MSG[f]),'needed')}}});if(ch)save()};
+window.__walleRem=function(){var L=[];['word','phrase','quote'].forEach(function(f){var r=CFG.rem[f];for(var i=0;i<r.n;i++)L.push({time:r.times[i],title:t('sWalle'),body:t(MSG[f])})});return L};
+window.__walleTick=function(hm){var td=F.today(),ch=false;['word','phrase','quote'].forEach(function(f){var r=CFG.rem[f];for(var i=0;i<r.n;i++){var k=f+i+'@'+r.times[i];if(hm>=r.times[i]&&CFG.fired[k]!==td){var first=CFG.fired[k]===undefined;CFG.fired[k]=td;ch=true;if(!first||hm.slice(0,5)===r.times[i])F.remind(t('sWalle'),t(MSG[f]),'needed')}}});if(ch)save()};
 // prime fired so reminders already past today don't all fire on first load
 (function(){var td=F.today(),d=new Date(),hm=pad(d.getHours())+':'+pad(d.getMinutes());['word','phrase','quote'].forEach(function(f){var r=CFG.rem[f];for(var i=0;i<r.n;i++){var k=f+i+'@'+r.times[i];if(CFG.fired[k]===undefined&&hm>=r.times[i])CFG.fired[k]=td}})})();
 // ---------- PIN (PBKDF2-SHA256, random salt, stored locally only)
@@ -145,15 +138,14 @@ function lockBtn(){var b=$('#kLock'),tm=null;var go=function(){b.classList.remov
  b.addEventListener('pointerdown',function(){b.classList.add('hold');tm=setTimeout(go,1500)});['pointerup','pointerleave','pointercancel'].forEach(function(e){b.addEventListener(e,function(){clearTimeout(tm);b.classList.remove('hold')})});
  b.addEventListener('click',function(e){e.preventDefault();F.toast(t('pinHintLP'),2500)});b.addEventListener('contextmenu',function(e){e.preventDefault()})}
 // native Android back button
-(function(){var C=window.Capacitor,App=C&&C.Plugins&&C.Plugins.App;if(!App||!App.addListener)return;App.addListener('backButton',function(e){if(K.on)return;if(!$('#wPop').classList.contains('hidden'))return closePop();if(e&&e.canGoBack)history.back();else App.exitApp()})})();
+(function(){var C=window.Capacitor,App=C&&C.Plugins&&C.Plugins.App;if(!App||!App.addListener)return;App.addListener('backButton',function(e){if(K.on)return;if(e&&e.canGoBack)history.back();else App.exitApp()})})();
 // ---------- init
-function init(){mount($('#wBot'));mount($('#kBot'));$('#wBot').tabIndex=0;
- $('#wBot').addEventListener('tapbot',function(){setTimeout(openPop,350)});$('#kBot').addEventListener('tapbot',function(){});
-$('#wPopX').onclick=closePop;$('#wPop').addEventListener('click',function(e){if(e.target.id==='wPop')closePop()});$$('#wPop .wopt').forEach(function(b){b.onclick=function(){sfx('chirp');act(b.dataset.f)}});
- document.addEventListener('keydown',function(e){if(e.key==='Escape'){closePop();if(!K.on||$('#pinDlg').classList.contains('hidden')===false)pinClose()}});
- $$('.wseg button').forEach(function(b){b.onclick=function(){if(b.dataset.f!==cur){sfx('boop');show(b.dataset.f)}}});
+function init(){mount($('#kBot'));
+$('#kBot').addEventListener('tapbot',function(){});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!K.on||$('#pinDlg').classList.contains('hidden')===false)pinClose()}});
+ $$('.wseg button').forEach(function(b){b.onclick=function(){if(b.dataset.f!==cur)show(b.dataset.f)}});
  $('#wNext').onclick=function(){show(cur,1)};
- $('#wLis').onclick=function(){if(lis.a){sfx('boop');speak(lis.a[0],lis.a[1])}};$('#wLisEx').onclick=function(){if(lis.b){speak(lis.b[0],lis.b[1])}};
+ $('#wLis').onclick=function(){if(lis.a)speak(lis.a[0],lis.a[1])};$('#wLisEx').onclick=function(){if(lis.b)speak(lis.b[0],lis.b[1])};
  $('#wGear').onclick=function(){F.openSettings&&F.openSettings('walle')};
  $('#wRetry').onclick=gate;
  $('#wWL').onchange=function(){CFG.wl=$('#wWL').value;save();if(greeted&&cur==='word')show('word')};$('#wLv').onchange=function(){CFG.lv=$('#wLv').value;save();if(greeted&&cur==='word')show('word')};$('#wPL').onchange=function(){CFG.pl=$('#wPL').value;save();if(greeted&&cur==='phrase')show('phrase')};
